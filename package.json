@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "proto": "^1.0.19"
+  }
+}
