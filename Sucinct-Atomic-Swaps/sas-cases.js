@@ -14,16 +14,16 @@ var cases = [
   'Alice can double spend in step 7',
 ]
 
+var failures = 0
 cases.forEach((theCase) => {
-  var failures = 0
   try {
     executeSequence(theCase)
   } catch(e) {
     failures++
     console.log(theCase+": ", e)
   }
-  console.log("\nFailures: "+failures)
 })
+console.log("\nFailures: "+failures)
 
 
 
@@ -43,9 +43,9 @@ function executeSequence(theCase) {
   ]).confirmed()
   var btcToBob = Output('BTC to Bob', ['aliceKey'], [
     Output('Success', ['aliceKey', 'bobKey', 'bobSecret'], bobOut),
-    Output('Revoke', ['aliceKey', 'bobKey', 'absTimelock(200)'], [
+    Output('Revoke', ['aliceKey', 'bobKey', 'absTimelock(100)'], [
       Output('Refund', ['aliceKey', 'bobKey', 'aliceSecret', 'timelock(100)'], aliceOut),
-      Output('Timeout', ['aliceKey', 'bobKey', 'aliceSecret', 'timelock(200)'], bobOut)
+      Output('Timeout', ['aliceKey', 'bobKey', 'timelock(200)'], bobOut)
     ])
   ]).confirmed()
 
@@ -60,11 +60,11 @@ function executeSequence(theCase) {
   bob.sign('bobKey', btcToBob.out('Revoke'))
   bob.sign('bobKey', btcToBob.out('Revoke','Refund'))
 
-  printState("After Step 0", alice, bob)
+  printState("After Step 0 (Transactions have been presigned)", alice, bob)
 
   // Step 1
   alice.send(btcToBob)
-  printState("After Step 1", alice, bob)
+  printState("After Step 1 (Alice sent the 'BTC to Bob' transaction)", alice, bob)
 
   // Step 2
   if(theCase === 'Bob never sends LTC') {
@@ -79,7 +79,7 @@ function executeSequence(theCase) {
     return printState("Final State", alice, bob)
   } else{
     bob.send(ltcToAlice)
-    printState("After Step 2", alice, bob)
+    printState("After Step 2 (Bob sent the 'LTC to Alice' transaction)", alice, bob)
   }
 
   // Step 3
@@ -96,22 +96,22 @@ function executeSequence(theCase) {
     return printState("Final State", alice, bob)
   } else {
     alice.sign('aliceKey', btcToBob.out('Success'))
-    printState("After Step 3", alice, bob)
+    printState("After Step 3 (Alice signed the Success transction)", alice, bob)
   }
 
   // Step 4
   if(theCase === 'Bob never gives Alice bobSecret - Bob Success') {
     bob.send(btcToBob.out('Success'))
-    return printState("Final State")
+    return printState("Final State", alice, bob)
   } else if(theCase === 'Bob never gives Alice bobSecret - Alice Revoke') {
     gs.timePasses(200)
     alice.send(btcToBob.out('Revoke'))
     gs.timePasses(100)
     alice.send(btcToBob.out('Revoke', 'Refund'))
-    return printState("Final State")
+    return printState("Final State", alice, bob)
   } else {
     bob.give('bobSecret', alice)
-    printState("After Step 4", alice, bob)
+    printState("After Step 4 (Bob gave Alice bobSecret)", alice, bob)
   }
 
   // Step 5
@@ -125,7 +125,7 @@ function executeSequence(theCase) {
     return printState("Final State", alice, bob)
   } else {
     alice.give('aliceKey', bob)
-    printState("After Step 5", alice, bob)
+    printState("After Step 5 (Alice gave Bob aliceKey)", alice, bob)
   }
 
   // Step 6 - Wait and watch.
@@ -141,12 +141,12 @@ function executeSequence(theCase) {
     return printState("Final State", alice, bob)
   } else {
     alice.send(ltcToAlice.out('Success'))
-    printState("After Step 7", alice, bob)
+    printState("After Step 7 (Alice spent the LTC)", alice, bob)
   }
 
   bob.send(btcToBob.out('Success'))
 
-  printState("Final State", alice, bob)
+  printState("Final State (After Bob spent the Success output)", alice, bob)
 
   function printState(name, alice, bob) {
     console.log("\n"+name+":\n")
