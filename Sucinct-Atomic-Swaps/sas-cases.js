@@ -42,8 +42,10 @@ function executeSequence(theCase) {
     Output('Success', ['aliceSecret', 'bobSecret'], [])
   ]).confirmed()
   var btcToBob = Output('BTC to Bob', ['aliceKey'], [
-    Output('Success', ['aliceKey', 'bobKey', 'bobSecret'], bobOut),
+    Output('Success', ['aliceKey', 'bobKey'], []),
+    Output('Bob Claim 1', ['aliceKey', 'bobKey', 'bobSecret'], bobOut),
     Output('Revoke', ['aliceKey', 'bobKey', 'absTimelock(100)'], [
+      Output('Bob Claim 2', ['aliceKey', 'bobKey'], []),
       Output('Refund', ['aliceKey', 'bobKey', 'aliceSecret', 'timelock(100)'], aliceOut),
       Output('Timeout', ['aliceKey', 'bobKey', 'timelock(200)'], bobOut)
     ])
@@ -83,10 +85,10 @@ function executeSequence(theCase) {
   }
 
   // Step 3
-  if(theCase.indexOf('Alice never signs the success transaction') === 0) {
+  if(theCase.indexOf('Alice never signs the Bob Claim 1 transaction') === 0) {
     gs.timePasses(200)
     bob.send(btcToBob.out('Revoke'))
-    if(theCase === 'Alice never signs the success transaction - Alice Refund') {
+    if(theCase === 'Alice never signs the Bob Claim 1 transaction - Alice Refund') {
       gs.timePasses(100)
       alice.send(btcToBob.out('Revoke', 'Refund'))
     } else { // Bob Timeout
@@ -95,13 +97,13 @@ function executeSequence(theCase) {
     }
     return printState("Final State", alice, bob)
   } else {
-    alice.sign('aliceKey', btcToBob.out('Success'))
-    printState("After Step 3 (Alice signed the Success transction)", alice, bob)
+    alice.sign('aliceKey', btcToBob.out('Bob Claim 1'))
+    printState("After Step 3 (Alice signed the Bob Claim 1 transction)", alice, bob)
   }
 
   // Step 4
   if(theCase === 'Bob never gives Alice bobSecret - Bob Success') {
-    bob.send(btcToBob.out('Success'))
+    bob.send(btcToBob.out('Bob Claim 1'))
     return printState("Final State", alice, bob)
   } else if(theCase === 'Bob never gives Alice bobSecret - Alice Revoke') {
     gs.timePasses(200)
@@ -116,12 +118,13 @@ function executeSequence(theCase) {
 
   // Step 5
   if(theCase === 'Alice never gives Bob AliceKey') {
-    gs.timePasses(200)
-    // Alice can now spend both the LTC and the BTC
-    alice.send(btcToBob.out('Revoke'))
+    // It doesn't have to be this amount of time, any amount of time
+    // significantly before 200 will work.
+    gs.timePasses(50)
+    // alice.send(btcToBob.out('Revoke')) // Alice can't Revoke yet.
+    bob.send(btcToBob.out('Bob Claim 1'))
+    // Alice will at some point spend her LTC.
     alice.send(ltcToAlice.out('Success'))
-    gs.timePasses(100)
-    alice.send(btcToBob.out('Revoke', 'Refund'))
     return printState("Final State", alice, bob)
   } else {
     alice.give('aliceKey', bob)
@@ -136,8 +139,8 @@ function executeSequence(theCase) {
     alice.send(btcToBob.out('Revoke'))
     alice.send(ltcToAlice.out('Success'))
 
-    gs.timePasses(100)
-    alice.send(btcToBob.out('Revoke', 'Refund'))
+    // alice.send(btcToBob.out('Revoke', 'Refund')) // Alice can't do this yet at this point.
+    bob.send(btcToBob.out('Bob Claim 1'))
     return printState("Final State", alice, bob)
   } else {
     alice.send(ltcToAlice.out('Success'))

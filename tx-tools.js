@@ -130,7 +130,7 @@ var OutputClass = proto(function() {
     this.spent = false
     this.state = {}
     this.confirmationTime // Will be set when parent creates this output.
-    this.requirements = requirements
+    this.requirements = validateRequirements(requirements)
     if(possibleOutputs) {
       // Maps output name to the output
       this.possibleOutputs = copyOutputPaths_(createSpendPathMap_(this, possibleOutputs))
@@ -229,7 +229,7 @@ var OutputClass = proto(function() {
         }
       } else if(requirement.indexOf('timelock(') === 0) {
         var lockTime = parseInt(requirement.slice('timelock('.length, -1))
-        if(!this.confirmationTime || state.time < this.confirmationTime + lockTime) {
+        if(this.confirmationTime === undefined || state.time < this.confirmationTime + lockTime) {
           results.push(requirement)
         }
       } else if(!state[requirement]) {
@@ -321,11 +321,22 @@ var OutputClass = proto(function() {
     }
     return result
   }
+
+  function validateRequirements(requirements) {
+    requirements.forEach((requirement) => {
+      if(getStateItemSuffix(requirement) === undefined
+         && requirement.indexOf('absTimelock(') !== 0
+         && requirement.indexOf('timelock(') !== 0) {
+        throw new Error("Found invalid requirement: "+requirement)
+      }
+    })
+    return requirements
+  }
 })
 
-function getStateItemSuffix(name) {
-  if(name.slice(-6) === 'Secret') return 'Secret'
-  if(name.slice(-3) === 'Key') return 'Key'
+function getStateItemSuffix(requirement) {
+  if(requirement.slice(-6) === 'Secret') return 'Secret'
+  if(requirement.slice(-3) === 'Key') return 'Key'
 }
 
 function mergeState(target, stateToMergeIn) {
