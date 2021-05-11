@@ -52,6 +52,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
      -> AliceSig & BobSig || timelock(1 day) & AliceSig
    * Revoke:  absTimelock(2 days)
      -> Revoke Output:
+        * Bob Claim2: AliceSig & BobSig
         * Refund2: timelock(1 day) & AliceSig & aliceSecret
           -> AliceSig
         * Timeout: timelock(2 days) & BobSig
@@ -72,6 +73,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
+       * Bob Claim2: AliceSig & BobSig
        * Refund2: timelock(1 day) & AliceSig & aliceSecret
           -> AliceSig
        * Timeout: timelock(2 days) & BobSig
@@ -90,6 +92,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
+       * Bob Claim2: AliceSig & BobSig
        * Refund2: timelock(1 day) & AliceSig & aliceSecret
           -> AliceSig
        * Timeout: timelock(2 days) & BobSig
@@ -108,6 +111,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
+       * Bob Claim2: AliceSig & BobSig
        * Refund2: timelock(1 day) & AliceSig & aliceSecret
           -> AliceSig
        * Timeout: timelock(2 days) & BobSig
@@ -125,8 +129,9 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
-     * Refund2: timelock(1 day) & AliceSig & aliceSecret -> AliceSig
-     * Timeout: timelock(2 days) & BobSig -> BobSig
+       * Bob Claim2: AliceSig & BobSig
+       * Refund2: timelock(1 day) & AliceSig & aliceSecret -> AliceSig
+       * Timeout: timelock(2 days) & BobSig -> BobSig
 ```
 
 ##### After Step 5
@@ -140,6 +145,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
     -> BobSig || timelock(1 day)
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
+       * Bob Claim2: AliceSig & BobSig
        * Refund2: timelock(1 day) & aliceSecret -> AliceSig
        * Timeout: timelock(2 days) & BobSig -> BobSig
 ```
@@ -154,6 +160,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
     -> BobSig || timelock(1 day)
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
+       * Bob Claim2: AliceSig & BobSig
        * Refund2: timelock(1 day) -> AliceSig
        * Timeout: timelock(2 days) & BobSig -> BobSig
 ```
