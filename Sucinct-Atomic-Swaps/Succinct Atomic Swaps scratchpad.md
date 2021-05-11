@@ -162,8 +162,6 @@ OR (more efficiently)
 2. After 1 day, Alice sends the `Refund1` transaction.
 3. After another 1 day, Alice spends the output confirmed in step 2.
 
-
-
 ### Step 3: Alice never signs the `Bob Claim1` transaction
 
 3. After 2 days, Bob sends the `Revoke` transaction.
