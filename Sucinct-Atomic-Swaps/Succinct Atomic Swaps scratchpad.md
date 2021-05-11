@@ -11,13 +11,13 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
  AliceSig
  -> BTC to Bob: 
     * Success: AliceSig & BobSig
-    * Bob Claim1: AliceSig & BobSig & bobSecret -> BobSig
-    * Refund1: absTimelock(1 day) & AliceSig & BobSig & aliceSecret
+    * Bob Claim1: AliceSig & BobSig -> BobSig
+    * Refund1: absTimelock(1 day) & AliceSig & BobSig
       -> AliceSig & BobSig || AliceSig & timelock(1 day)
     * Revoke:  absTimelock(2 days) & AliceSig & BobSig
       -> Revoke Output:
          * Bob Claim2: AliceSig & BobSig
-         * Refund2: timelock(1 day) & AliceSig & BobSig & aliceSecret -> AliceSig
+         * Refund2: timelock(1 day) & AliceSig & BobSig -> AliceSig
          * Timeout: timelock(2 days) & AliceSig & BobSig -> BobSig
 ```
 
@@ -25,10 +25,10 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
 
 ### Normal Case:
 
-0. Alice signs the `Revoke` and `Revoke-Timeout`, Bob signs `Revoke` and `Revoke-Refund2`.
+0. Alice signs the `Revoke` and `Revoke-Timeout`, Bob signs `Revoke`. Bob also signs both `Refund1` and `Revoke-Refund2` with adapter signatures that require `aliceSecret` to complete.
 1. Alice sends `BTC to Bob` transaction.
 2. Bob sends `LTC to Alice` transaction.
-3. Alice signs the `Bob Claim1` transaction (with an adapter signature that requires `secretBob`).
+3. Alice signs the `Bob Claim1` transaction with an adapter signature that adds the requirement of `bobSecret` to the transaction.
 4. Bob gives Alice `bobSecret`
 5. Alice gives Bob `AliceKey` (which can produce `AliceSig`).
 6. Bob continues to watch the chain for a revoke transaction.
@@ -46,17 +46,14 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
  AliceSig
  -> BTC to Bob: 
    * Success: AliceSig & BobSig
-   * Bob Claim1: AliceSig & BobSig & bobSecret
-     -> BobSig
-   * Refund1: absTimelock(1 day) & AliceSig & BobSig & aliceSecret
+   * Bob Claim1: AliceSig & BobSig -> BobSig
+   * Refund1: absTimelock(1 day) & AliceSig & aliceSecret
      -> AliceSig & BobSig || timelock(1 day) & AliceSig
    * Revoke:  absTimelock(2 days)
      -> Revoke Output:
         * Bob Claim2: AliceSig & BobSig
-        * Refund2: timelock(1 day) & AliceSig & aliceSecret
-          -> AliceSig
-        * Timeout: timelock(2 days) & BobSig
-          -> BobSig
+        * Refund2: timelock(1 day) & AliceSig & aliceSecret -> AliceSig
+        * Timeout: timelock(2 days) & BobSig -> BobSig
 ```
 
 ##### After Step 1
@@ -67,17 +64,14 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
 
  BTC to Bob: 
  * Success: AliceSig & BobSig
- * Bob Claim1: AliceSig & BobSig & bobSecret
-   -> BobSig
- * Refund1: absTimelock(1 day) & AliceSig & BobSig & aliceSecret
+ * Bob Claim1: AliceSig & BobSig -> BobSig
+ * Refund1: absTimelock(1 day) & AliceSig & aliceSecret
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
        * Bob Claim2: AliceSig & BobSig
-       * Refund2: timelock(1 day) & AliceSig & aliceSecret
-          -> AliceSig
-       * Timeout: timelock(2 days) & BobSig
-          -> BobSig
+       * Refund2: timelock(1 day) & AliceSig & aliceSecret -> AliceSig
+       * Timeout: timelock(2 days) & BobSig -> BobSig
 ```
 
 ##### After Step 2
@@ -86,17 +80,14 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
  LTC to Alice: aliceSecret & bobSecret
  BTC to Bob: 
  * Success: AliceSig & BobSig
- * 1: AliceSig & BobSig & bobSecret
-   -> BobSig
- * Refund1: absTimelock(1 day) & AliceSig & BobSig & aliceSecret
+ * Bob Claim1: AliceSig & BobSig -> BobSig
+ * Refund1: absTimelock(1 day) & AliceSig & aliceSecret
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
        * Bob Claim2: AliceSig & BobSig
-       * Refund2: timelock(1 day) & AliceSig & aliceSecret
-          -> AliceSig
-       * Timeout: timelock(2 days) & BobSig
-          -> BobSig
+       * Refund2: timelock(1 day) & AliceSig & aliceSecret -> AliceSig
+       * Timeout: timelock(2 days) & BobSig -> BobSig
 ```
 
 ##### After Step 3
@@ -105,17 +96,14 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
  LTC to Alice: aliceSecret & bobSecret
  BTC to Bob: 
  * Success: AliceSig & BobSig
- * Bob Claim1: BobSig & bobSecret
-    -> BobSig
- * Refund1: absTimelock(1 day) & AliceSig & BobSig & aliceSecret
+ * Bob Claim1: bobSecret & BobSig -> BobSig
+ * Refund1: absTimelock(1 day) & AliceSig & aliceSecret
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
        * Bob Claim2: AliceSig & BobSig
-       * Refund2: timelock(1 day) & AliceSig & aliceSecret
-          -> AliceSig
-       * Timeout: timelock(2 days) & BobSig
-          -> BobSig
+       * Refund2: timelock(1 day) & AliceSig & aliceSecret -> AliceSig
+       * Timeout: timelock(2 days) & BobSig -> BobSig
 ```
 
 ##### After Step 4
@@ -125,7 +113,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
  BTC to Bob: 
  * Success: AliceSig & BobSig
  * Bob Claim1: BobSig -> BobSig
- * Refund1: absTimelock(1 day) & AliceSig & BobSig & aliceSecret
+ * Refund1: absTimelock(1 day) & AliceSig & aliceSecret
     -> AliceSig & BobSig || timelock(1 day) & AliceSig
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
@@ -141,7 +129,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
  BTC to Bob: 
  * Success: AliceSig & BobSig
  * 1: BobSig -> BobSig
- * Refund1: absTimelock(1 day) & BobSig & aliceSecret
+ * Refund1: absTimelock(1 day) & aliceSecret
     -> BobSig || timelock(1 day)
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
@@ -156,8 +144,7 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
  BTC to Bob: 
  * Success: AliceSig & BobSig
  * Bob Claim1: BobSig -> BobSig
- * Refund1: absTimelock(1 day) & BobSig
-    -> BobSig || timelock(1 day)
+ * Refund1: absTimelock(1 day) -> BobSig || timelock(1 day)
  * Revoke:  absTimelock(2 days)
     -> Revoke Output:
        * Bob Claim2: AliceSig & BobSig
@@ -169,6 +156,13 @@ This goes through [Succinct Atomic Swaps](https://gist.github.com/RubenSomsen/88
 
 2. After 2 days, Alice sends the `Revoke` transaction.
 3. After 1 day, Alice sends the `Refund2` transaction.
+
+OR (more efficiently)
+
+2. After 1 day, Alice sends the `Refund1` transaction.
+3. After another 1 day, Alice spends the output confirmed in step 2.
+
+
 
 ### Step 3: Alice never signs the `Bob Claim1` transaction
 
