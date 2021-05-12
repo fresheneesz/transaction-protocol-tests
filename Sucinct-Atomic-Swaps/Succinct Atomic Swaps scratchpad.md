@@ -164,21 +164,21 @@ OR (more efficiently)
 
 ### Step 3: Alice never signs the `Bob Claim1` transaction
 
-3. After 2 days, Bob sends the `Revoke` transaction.
-4a. If after 1 day Alice sends the `Refund2` transaction. Bob will learn `aliceSecret` and be able to access the LTC.
-4b. If after 2 more days, Bob sends the `Timeout` transaction, and receives his bitcoin back. Note that at this point neither party has no trustless way to retrieve the LTC.
+3. After 2 days, Bob sends the `Revoke` transaction.  
+4. a. If after 1 day Alice sends the `Refund2` transaction. Bob will learn `aliceSecret` and be able to access the LTC.  
+  b. If after 2 more days, Bob sends the `Timeout` transaction, and receives his bitcoin back. Note that at this point neither party has no trustless way to retrieve the LTC.
 
 ### Step 4: Bob never gives Alice bobSecret
 
-4a. If Bob sends the `Bob Claim1` transaction within 2 days, Alice will learn `bobSecret` and can spend the LTC.
-4b. If, after 2 days, Alice sends the `Revoke` transaction, she can then send `Refund2` after 1 day to retrieve her bitcoin.
+4. a. If Bob sends the `Bob Claim1` transaction within 2 days, Alice will learn `bobSecret` and can spend the LTC.  
+   b. If, after 2 days, Alice sends the `Revoke` transaction, she can then send `Refund2` after 1 day to retrieve her bitcoin.
 
 ### Step 5: Alice never gives Bob AliceKey
 
-1. After about a day (and less than 2 days), Bob can send the `Bob Claim1` transaction to receive his BTC at the predetermined return address.
+1. After say 6 hours (and less than 2 days), Bob sends the `Bob Claim1` transaction to receive his BTC at the predetermined return address.
 2. After 2 days, Alice can spend the `LTC to Alice` output.
 
-### Step 6: Alice can double spend
+### Step 6: Alice Revokes after 2 days
 
 1. After 2 days, Alice spends the `LTC to Alice` output and the `Revoke` output at the same time.
 2. Bob then spends `Bob Claim2` to retrieve his coins and send wherever he wants.
