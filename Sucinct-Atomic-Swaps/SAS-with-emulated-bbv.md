@@ -4,7 +4,7 @@ The [SAS with OP_BBV](SAS-with-op-bbv.md) can be emulated using [this emulation 
 
 ## Comparison to SAS without OP_BBV
 
-* Pro: Neither party needs to store/backup any state that can't be recovered from the seed.
+* Pro: No dynamic state that can't be recovered from the seed needs to be stored / backed up for long period of time.
 * Con: Is not scriptless.
 
 Both this and [Ruben Somsen's SAS protocol](https://gist.github.com/RubenSomsen/8853a66a64825716f51b409be528355f) require 2 transactions (1 per chain) in normal scenarios. And both require one party (Bob) to watch the chain until he spends his received coins. However, in this protocol, once the `ALTC to Alice` transaction has been sent, neither party needs to store any dynamic state and can restore from only their seed. In Ruben's SAS protocol, Bob must store state (Alice's key) until he spends his received coins. However, this protocol is not scriptless.
