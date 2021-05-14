@@ -2,6 +2,15 @@
 
 The [SAS with OP_BBV](SAS-with-op-bbv.md) can be emulated using [this emulation technique](bip-beforeblockverify.md#emulation-with-absolute-and-relative-timelocks). This has the downside that one party (Bob) must watch the blockchain until he spends the coins he received in the swap. 
 
+## Comparison to SAS without OP_BBV
+
+* Pro: Neither party needs to store/backup any state that can't be recovered from the seed.
+* Con: Is not scriptless.
+
+Both this and [Ruben Somsen's SAS protocol](https://gist.github.com/RubenSomsen/8853a66a64825716f51b409be528355f) require 2 transactions (1 per chain) in normal scenarios. And both require one party (Bob) to watch the chain until he spends his received coins. However, in this protocol, once the `ALTC to Alice` transaction has been sent, neither party needs to store any dynamic state and can restore from only their seed. In Ruben's SAS protocol, Bob must store state (Alice's key) until he spends his received coins. However, this protocol is not scriptless.
+
+## Transaction spend-paths
+
 The transactions could look like the following using [spend-path notation](notation.md):
 
 ```
@@ -60,9 +69,8 @@ At the end of this, Bob gets both the ALTC and the BTC. Its in Alice's best inte
 * In failure cases, up to five transactions in total may be needed.
 * Alice can consider the transaction complete after 1 day.
 * Bob can only consider the transaction fully complete when he spends the `Bob Success` spend-path. Until then, Bob must watch the chain for Alice attempting to cheat. 
-* Recovery normally does not require any secrets - recovery should be possible from just the seed. Bob can recover from his seed alone at any point in the protocol, as long as `bobSecret` is generated deterministically from the seed.
+* Recovery normally does not require any secrets - recovery should be possible from just the seed. Bob can recover from his seed alone at any point in the protocol, as long as `aliceSecret` is generated deterministically from the seed. To generate the seed, Alice can simply use an HD wallet spend path with an index that hasn't been used before, which she can verify by looking for any `Alice Revoke` transactions a key from her seed has signed on the blockchain. 
 * Alice needs to back up the pre-signed `Alice Revoke`  transaction to recover from data loss that occurs in the middle of the protocol. This only needs to be done until Bob sends the `ALTC to Alice` transaction (and it is confirmed) or until Alice sends the `Refund` transaction. In practice, this could normally take well under an hour (or some small fraction of whatever smaller timeout is chosen). 
 
-## Comparison to SAS without OP_BBV
 
-Both this and [Ruben Somsen's SAS protocol](https://gist.github.com/RubenSomsen/8853a66a64825716f51b409be528355f) require 2 transactions (1 per chain) in normal scenarios. And both require one party (Bob) to watch the chain until he spends his received coins. However, in this protocol, once the `ALTC to Alice` transaction has been sent, neither party needs to store any dynamic state and can restore from only their seed. In Ruben's SAS protocol, Bob must store state (Alice's key) until he spends his received coins. 
+
