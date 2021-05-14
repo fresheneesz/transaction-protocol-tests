@@ -1,6 +1,6 @@
 # Succinct Atomic Swaps With  Emulated OP_BBV
 
-The [SAS with OP_BBV](SAS-with-op-bbv.md) can be emulated using [this emulation technique](bip-beforeblockverify.md#emulation-with-absolute-and-relative-timelocks). This has the downside that one party (Bob) must watch the blockchain until he spends the coins he received in the swap. 
+The [SAS with OP_BBV](https://github.com/fresheneesz/bip-efficient-bitcoin-vaults/blob/main/SAS-with-emulated-bbv.md) can be emulated using [this emulation technique](https://github.com/fresheneesz/bip-efficient-bitcoin-vaults/blob/main/bip-beforeblockverify.md#emulation-with-absolute-and-relative-timelocks). This has the downside that one party (Bob) must watch the blockchain until he spends the coins he received in the swap. 
 
 ## Comparison to SAS without OP_BBV
 
