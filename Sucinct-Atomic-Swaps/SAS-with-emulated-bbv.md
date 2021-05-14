@@ -72,5 +72,7 @@ At the end of this, Bob gets both the ALTC and the BTC. Its in Alice's best inte
 * Recovery normally does not require any secrets - recovery should be possible from just the seed. Bob can recover from his seed alone at any point in the protocol, as long as `aliceSecret` is generated deterministically from the seed. To generate the seed, Alice can simply use an HD wallet spend path with an index that hasn't been used before, which she can verify by looking for any `Alice Revoke` transactions a key from her seed has signed on the blockchain. 
 * Alice needs to back up the pre-signed `Alice Revoke`  transaction to recover from data loss that occurs in the middle of the protocol. This only needs to be done until Bob sends the `ALTC to Alice` transaction (and it is confirmed) or until Alice sends the `Refund` transaction. In practice, this could normally take well under an hour (or some small fraction of whatever smaller timeout is chosen). 
 
+## Test evaluation of the various cases
 
+[sas-with-emulated-bbv.js](sas-with-emulated-bbv.js) contains a battery of tests that validate that all the above cases can be successfully executed. The script can be modified to validate that other sequences of actions can't result in theft or other damage.
 
