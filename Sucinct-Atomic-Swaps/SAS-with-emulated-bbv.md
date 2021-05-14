@@ -11,7 +11,7 @@ Both this and [Ruben Somsen's SAS protocol](https://gist.github.com/RubenSomsen/
 
 ## Transaction spend-paths
 
-The transactions could look like the following using [spend-path notation](notation.md):
+The transactions could look like the following using [spend-path notation](https://github.com/fresheneesz/bip-efficient-bitcoin-vaults/blob/main/notation.md):
 
 ```
 AliceSig
